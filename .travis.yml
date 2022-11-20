@@ -1,0 +1,17 @@
+sudo: required
+language: generic 
+
+services:
+  - docker 
+
+before_install:
+  - docker build -t monsieurgermain/client -f ./client/Dockerfile.dev ./client
+
+script: 
+  - docker run -e CI=true monsieurgermain/client npm test
+
+after_success: 
+  - docker build -t monsieurgermain/multi-client ./client
+  - docker build -t monsieurgermain/multi-nginx ./nginx
+  - docker build -t monsieurgermain/multi-server ./server
+  - docker build -t monsieurgermain/multi-worker ./worker
